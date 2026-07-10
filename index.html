@@ -35,7 +35,8 @@
   --serif:"New York","Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{touch-action:manipulation}
 html{-webkit-text-size-adjust:100%}
 body{
   background:var(--ink);
@@ -54,11 +55,12 @@ input,select,textarea{
   background:var(--ink-2);
   border:1px solid var(--line);
   border-radius:9px;
-  padding:9px 11px;
-  font-size:15px;
+  padding:10px 12px;
+  font-size:16px; /* 16px stops iOS zooming on focus */
   width:100%;
   outline:none;
 }
+input[type=search]{-webkit-appearance:none;appearance:none}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(198,152,50,.15)}
 select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23b9ad93' fill='none' stroke-width='1.5' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
 label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory-faint);margin-bottom:5px;font-weight:600}
@@ -124,6 +126,7 @@ nav.tabs{
   padding:10px 16px 12px;position:relative;
 }
 .tab .n{color:var(--ivory-faint);font-weight:400;margin-left:4px;font-variant-numeric:tabular-nums}
+.tab svg{display:none}
 .tab.active{color:var(--gold-bright)}
 .tab.active::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--gold)}
 .tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;border-radius:6px}
@@ -347,13 +350,63 @@ main{max-width:1180px;margin:16px auto 0;padding:0 20px}
 .sync-note b{color:var(--gold-bright);font-weight:600}
 .backup-tag{font-size:11.5px;color:var(--ivory-faint);letter-spacing:.04em}
 
-@media (max-width:640px){
-  .ledger{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:1fr}
+/* ============ iPhone layer (16 Pro Max & friends) ============ */
+@media (max-width:740px){
+  body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+  header{padding:calc(14px + env(safe-area-inset-top)) 16px 0}
+  h1{font-size:24px}
+  .eyebrow{font-size:9.5px;letter-spacing:.24em}
+  .rule{margin-top:10px}
+
+  /* stats: swipeable strip */
+  .ledger{display:flex;overflow-x:auto;gap:8px;padding:0 16px;margin-top:16px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ledger::-webkit-scrollbar{display:none}
+  .stat{flex:0 0 46%;scroll-snap-align:start}
+
+  /* toolbar: sticky glass bar, horizontally scrollable */
+  .toolbar{position:sticky;top:0;z-index:30;margin-top:12px;
+    padding:10px 16px calc(10px);padding-top:calc(10px + env(safe-area-inset-top));
+    background:rgba(22,17,12,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:none}
+  .toolbar::-webkit-scrollbar{display:none}
+  .toolbar input[type=search]{flex:0 0 56vw;min-width:0}
+  .toolbar select{flex:0 0 auto;width:auto}
+  #btnSync{flex:0 0 auto}
+
+  main{padding:0 16px}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .card{padding:15px 15px 12px}
+  .card-foot select{padding:12px 32px 12px 12px}
+  .icon-btn{padding:12px 15px;font-size:14px}
+  .star{padding:8px;font-size:19px;top:8px;right:8px}
+
+  /* bottom tab bar */
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:35;margin:0;max-width:none;
+    padding:7px 10px calc(7px + env(safe-area-inset-bottom));
+    background:rgba(22,17,12,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--line-soft);border-bottom:none;justify-content:space-around}
+  .tab{flex:1;padding:6px 4px;font-size:10.5px;letter-spacing:.08em;
+    display:flex;flex-direction:column;align-items:center;gap:3px}
+  .tab svg{display:block;width:23px;height:23px}
+  .tab.active::after{display:none}
+
+  .fab{right:16px;bottom:calc(84px + env(safe-area-inset-bottom));width:60px;height:60px;font-size:30px}
+  .toast{bottom:calc(104px + env(safe-area-inset-bottom))}
+
+  /* modals become bottom sheets */
+  .overlay{padding:0;align-items:flex-end}
+  .modal{max-width:none;border-radius:22px 22px 0 0;margin:0;
+    max-height:93dvh;display:flex;flex-direction:column;border-left:none;border-right:none;border-bottom:none}
+  .modal::before{content:"";flex:0 0 auto;width:40px;height:4px;border-radius:99px;
+    background:var(--line);margin:10px auto 0}
+  .modal-head{flex:0 0 auto}
+  .modal-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .modal-foot{flex:0 0 auto;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .modal-foot .btn{padding:13px 20px}
   .row3{grid-template-columns:1fr 1fr}
-  .tab{padding:10px 10px 12px;font-size:12px}
-  .detail-table .dr{grid-template-columns:118px 1fr}
-  header{padding-top:18px}
+  .detail-table .dr{grid-template-columns:112px 1fr}
+  .photos{grid-template-columns:repeat(3,1fr)}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
@@ -371,9 +424,15 @@ main{max-width:1180px;margin:16px auto 0;padding:0 20px}
 <section class="ledger" id="ledger"></section>
 
 <nav class="tabs" role="tablist">
-  <button class="tab active" data-tab="pipeline" role="tab">Pipeline<span class="n" id="nPipeline"></span></button>
-  <button class="tab" data-tab="auctions" role="tab">Auctions<span class="n" id="nAuctions"></span></button>
-  <button class="tab" data-tab="archive" role="tab">Archive<span class="n" id="nArchive"></span></button>
+  <button class="tab active" data-tab="pipeline" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/></svg>
+    <span>Pipeline<span class="n" id="nPipeline"></span></span></button>
+  <button class="tab" data-tab="auctions" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.5" y="2.5" width="5" height="9" rx="1" transform="rotate(45 12 7)"/><path d="M11.5 11.5L4.5 18.5"/><path d="M13 20h8"/></svg>
+    <span>Auctions<span class="n" id="nAuctions"></span></span></button>
+  <button class="tab" data-tab="archive" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="16" height="4.5" rx="1"/><path d="M6 9v9a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 18 18V9"/><path d="M10 13h4"/></svg>
+    <span>Archive<span class="n" id="nArchive"></span></span></button>
 </nav>
 
 <div class="toolbar" id="toolbar">

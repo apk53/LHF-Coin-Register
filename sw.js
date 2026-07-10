@@ -1,5 +1,5 @@
 /* LHF Acquisitions Register — offline service worker */
-const CACHE = 'lhf-register-v2';
+const CACHE = 'lhf-register-v3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
