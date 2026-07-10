@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>LHF · Acquisitions Register</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#16110c">
+<meta name="apple-mobile-web-app-title" content="LHF Register">
+<style>
+:root{
+  --ink:#16110c;
+  --ink-2:#1e1810;
+  --panel:#241c12;
+  --panel-2:#2b2216;
+  --line:#3a2f1f;
+  --line-soft:#2e2517;
+  --ivory:#ede4cf;
+  --ivory-dim:#b9ad93;
+  --ivory-faint:#8a7f68;
+  --gold:#c69832;
+  --gold-bright:#e0b855;
+  --gold-deep:#8a6a1f;
+  --lac:#a4422f;
+  --lac-soft:#c05a44;
+  --verdigris:#5f7d63;
+  --verdigris-bright:#7d9c80;
+  --slate:#6f7f92;
+  --silver:#8f887a;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --r:14px;
+  --serif:"New York","Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--ink);
+  color:var(--ivory);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.5;
+  min-height:100vh;
+  background-image:radial-gradient(1200px 500px at 50% -140px, rgba(198,152,50,.08), transparent 65%);
+  padding-bottom:90px;
+}
+::selection{background:rgba(198,152,50,.35)}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;color:var(--ivory)}
+input,select,textarea{
+  background:var(--ink-2);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:9px 11px;
+  font-size:15px;
+  width:100%;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(198,152,50,.15)}
+select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23b9ad93' fill='none' stroke-width='1.5' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory-faint);margin-bottom:5px;font-weight:600}
+
+/* ---------- Header ---------- */
+header{
+  padding:26px 20px 0;
+  max-width:1180px;margin:0 auto;
+}
+.eyebrow{
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;text-align:center;
+}
+h1{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:clamp(26px,5vw,38px);
+  text-align:center;
+  letter-spacing:.01em;
+  margin-top:6px;
+  color:var(--ivory);
+}
+h1 .amp{color:var(--gold);font-style:italic}
+.rule{
+  display:flex;align-items:center;gap:14px;justify-content:center;
+  margin:14px auto 0;max-width:520px;
+}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line));}
+.rule::after{background:linear-gradient(90deg,var(--line),transparent)}
+.rule .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.8}
+
+/* ---------- Stats ledger ---------- */
+.ledger{
+  max-width:1180px;margin:22px auto 0;padding:0 20px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+.stat{
+  background:var(--panel);
+  border:1px solid var(--line-soft);
+  border-radius:var(--r);
+  padding:13px 16px 11px;
+  text-align:center;
+}
+.stat .v{
+  font-family:var(--serif);
+  font-size:22px;
+  font-variant-numeric:tabular-nums;
+  color:var(--ivory);
+}
+.stat .v.gold{color:var(--gold-bright)}
+.stat .v.red{color:var(--lac-soft)}
+.stat .v.green{color:var(--verdigris-bright)}
+.stat .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ivory-faint);margin-top:2px}
+
+/* ---------- Tabs ---------- */
+nav.tabs{
+  max-width:1180px;margin:24px auto 0;padding:0 20px;
+  display:flex;gap:4px;border-bottom:1px solid var(--line-soft);
+}
+.tab{
+  background:none;border:none;color:var(--ivory-dim);
+  font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  padding:10px 16px 12px;position:relative;
+}
+.tab .n{color:var(--ivory-faint);font-weight:400;margin-left:4px;font-variant-numeric:tabular-nums}
+.tab.active{color:var(--gold-bright)}
+.tab.active::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--gold)}
+.tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;border-radius:6px}
+
+/* ---------- Toolbar ---------- */
+.toolbar{
+  max-width:1180px;margin:16px auto 0;padding:0 20px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.toolbar input[type=search]{flex:2 1 200px;min-width:150px}
+.toolbar select{flex:1 1 130px;min-width:120px;width:auto}
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--ivory);
+  border-radius:9px;padding:9px 14px;font-size:14px;font-weight:500;
+  transition:border-color .15s, background .15s;
+  white-space:nowrap;
+}
+.btn:hover{border-color:var(--gold-deep)}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn.gold{
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  color:#241a06;border-color:var(--gold-deep);font-weight:650;
+}
+.btn.gold:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--lac-soft);border-color:#4a2a22}
+
+/* ---------- Grid & cards ---------- */
+main{max-width:1180px;margin:16px auto 0;padding:0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--ink-2));
+  border:1px solid var(--line-soft);
+  border-radius:var(--r);
+  padding:16px 16px 13px;
+  position:relative;
+  transition:border-color .18s, transform .18s;
+  display:flex;flex-direction:column;gap:10px;
+}
+.card:hover{border-color:var(--gold-deep);transform:translateY(-1px)}
+.card-top{display:flex;gap:12px;align-items:flex-start}
+.roundel{
+  flex:0 0 46px;width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:13px;font-weight:700;letter-spacing:.05em;
+  border:1px solid;
+  background:radial-gradient(circle at 32% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 45%);
+  box-shadow:inset 0 -6px 12px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.06);
+  user-select:none;
+}
+.roundel.AV{color:#3a2a08;border-color:#9a7a26;background-color:#caa03c}
+.roundel.AR{color:#2b2b2e;border-color:#9a9a9c;background-color:#c9c9cc}
+.roundel.AE{color:#2e1c12;border-color:#8a5a34;background-color:#a4744a}
+.roundel.BI{color:#26221c;border-color:#8a8272;background-color:#a89e88}
+.roundel img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.roundel.haspic{padding:0;overflow:hidden;background:none;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.card h3{
+  font-family:var(--serif);font-size:17.5px;font-weight:600;line-height:1.28;
+  color:var(--ivory);
+}
+.card .sub{
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ivory-dim);margin-top:3px;
+}
+.card .sub b{color:var(--gold-bright);font-weight:600}
+.star{
+  position:absolute;top:12px;right:12px;background:none;border:none;
+  font-size:17px;color:var(--ivory-faint);line-height:1;padding:4px;
+}
+.star.on{color:var(--gold-bright)}
+.specs{
+  display:flex;flex-wrap:wrap;gap:5px 12px;
+  font-size:12.5px;color:var(--ivory-dim);font-variant-numeric:tabular-nums;
+}
+.specs span b{color:var(--ivory);font-weight:500}
+.badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:650;
+  padding:3px 9px;border-radius:99px;border:1px solid;
+}
+.chip.src-dealer{color:var(--slate);border-color:#39434f;background:rgba(111,127,146,.08)}
+.chip.src-auction{color:var(--lac-soft);border-color:#523128;background:rgba(164,66,47,.1)}
+.chip.count{color:var(--lac-soft);border-color:#523128;background:rgba(164,66,47,.14)}
+.chip.count.soon{color:#e8b0a2;background:rgba(164,66,47,.3);border-color:var(--lac)}
+.chip.stage-offered{color:var(--silver);border-color:#46413a;background:rgba(143,136,122,.08)}
+.chip.stage-watching{color:#9fb0c2;border-color:#39434f;background:rgba(111,127,146,.1)}
+.chip.stage-offer{color:var(--gold-bright);border-color:var(--gold-deep);background:rgba(198,152,50,.1)}
+.chip.stage-neg{color:#d99a55;border-color:#5c3f1e;background:rgba(180,105,46,.1)}
+.chip.stage-pay{color:var(--lac-soft);border-color:#523128;background:rgba(164,66,47,.12)}
+.chip.stage-acq{color:var(--verdigris-bright);border-color:#3a4f3e;background:rgba(95,125,99,.12)}
+.chip.stage-pass{color:var(--ivory-faint);border-color:#3a352c;background:rgba(138,127,104,.08)}
+.price-row{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  font-variant-numeric:tabular-nums;
+}
+.price-row .main{font-family:var(--serif);font-size:19px;color:var(--gold-bright)}
+.price-row .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ivory-faint)}
+.price-row .alt{font-size:13px;color:var(--ivory-dim)}
+.card-foot{
+  display:flex;gap:8px;align-items:center;margin-top:2px;
+  border-top:1px solid var(--line-soft);padding-top:10px;
+}
+.card-foot select{flex:1;padding:7px 30px 7px 10px;font-size:13px}
+.icon-btn{
+  background:none;border:1px solid var(--line);border-radius:8px;
+  color:var(--ivory-dim);padding:7px 10px;font-size:13px;
+}
+.icon-btn:hover{border-color:var(--gold-deep);color:var(--ivory)}
+.note-line{font-size:12.5px;color:var(--ivory-faint);font-style:italic;line-height:1.4}
+
+/* ---------- Empty state ---------- */
+.empty{
+  text-align:center;padding:70px 20px;color:var(--ivory-faint);
+}
+.empty .coin{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 16px;
+  border:1px dashed var(--gold-deep);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:22px;color:var(--gold-deep);
+}
+.empty h2{font-family:var(--serif);font-weight:500;color:var(--ivory-dim);font-size:20px;margin-bottom:6px}
+.empty p{max-width:400px;margin:0 auto;font-size:14px}
+
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(10,7,4,.72);backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:center;z-index:50;
+  padding:24px 12px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  width:100%;max-width:640px;
+  box-shadow:var(--shadow);
+  margin:auto 0;
+}
+.modal-head{
+  padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center;
+}
+.modal-head h2{font-family:var(--serif);font-weight:600;font-size:21px}
+.x{background:none;border:none;color:var(--ivory-faint);font-size:22px;padding:4px 8px;line-height:1}
+.x:hover{color:var(--ivory)}
+.modal-body{padding:14px 20px 20px;display:grid;gap:14px}
+.fieldset-label{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  font-weight:700;border-bottom:1px solid var(--line-soft);padding-bottom:6px;margin-top:4px;
+}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{
+  flex:1;background:var(--ink-2);border:none;color:var(--ivory-dim);
+  padding:9px;font-size:13.5px;font-weight:550;
+}
+.seg button.on{background:rgba(198,152,50,.18);color:var(--gold-bright)}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.photo-slot{
+  border:1px dashed var(--line);border-radius:12px;aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;position:relative;
+  color:var(--ivory-faint);font-size:13px;overflow:hidden;background:var(--ink-2);
+  text-align:center;padding:4px;
+}
+.photo-slot img{width:100%;height:100%;object-fit:cover}
+.photo-slot .rm{
+  position:absolute;top:6px;right:6px;background:rgba(10,7,4,.75);border:none;
+  color:var(--ivory);border-radius:99px;width:24px;height:24px;font-size:13px;
+}
+.photo-slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.history{font-size:12.5px;color:var(--ivory-faint);display:grid;gap:4px;max-height:130px;overflow-y:auto}
+.history div b{color:var(--ivory-dim);font-weight:550}
+.modal-foot{
+  padding:0 20px 20px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+}
+.modal-foot .btn{padding:11px 20px}
+
+/* ---------- Detail view ---------- */
+.detail-imgs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-imgs img{width:100%;border-radius:12px;border:1px solid var(--line)}
+.detail-table{display:grid;gap:0;font-size:14px}
+.detail-table .dr{
+  display:grid;grid-template-columns:150px 1fr;gap:12px;
+  padding:8px 2px;border-bottom:1px solid var(--line-soft);
+}
+.detail-table .dr:last-child{border-bottom:none}
+.detail-table .dk{color:var(--ivory-faint);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding-top:2px}
+.detail-table .dv{color:var(--ivory);font-variant-numeric:tabular-nums}
+
+/* ---------- FAB ---------- */
+.fab{
+  position:fixed;right:20px;bottom:24px;z-index:40;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  color:#241a06;border:1px solid var(--gold-deep);
+  font-size:28px;line-height:1;font-weight:400;
+  box-shadow:0 8px 24px rgba(198,152,50,.35);
+  display:flex;align-items:center;justify-content:center;
+}
+.fab:hover{filter:brightness(1.07)}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
+  background:var(--panel-2);border:1px solid var(--gold-deep);color:var(--ivory);
+  border-radius:99px;padding:10px 20px;font-size:14px;opacity:0;pointer-events:none;
+  transition:opacity .25s, transform .25s;z-index:60;box-shadow:var(--shadow);
+  max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- Archive sections ---------- */
+.arch-h{
+  font-family:var(--serif);font-size:18px;color:var(--ivory-dim);
+  margin:22px 0 12px;display:flex;align-items:center;gap:10px;
+}
+.arch-h::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.arch-h .n{font-size:13px;color:var(--ivory-faint);font-family:var(--sans)}
+
+/* ---------- Sync panel ---------- */
+.sync-note{font-size:13px;color:var(--ivory-dim);line-height:1.55}
+.sync-note b{color:var(--gold-bright);font-weight:600}
+.backup-tag{font-size:11.5px;color:var(--ivory-faint);letter-spacing:.04em}
+
+@media (max-width:640px){
+  .ledger{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+  .row3{grid-template-columns:1fr 1fr}
+  .tab{padding:10px 10px 12px;font-size:12px}
+  .detail-table .dr{grid-template-columns:118px 1fr}
+  header{padding-top:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Liberty Heritage Foundation · The Liberty Collection</div>
+  <h1>Acquisitions Register</h1>
+  <div class="rule"><span class="dot"></span></div>
+</header>
+
+<section class="ledger" id="ledger"></section>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="pipeline" role="tab">Pipeline<span class="n" id="nPipeline"></span></button>
+  <button class="tab" data-tab="auctions" role="tab">Auctions<span class="n" id="nAuctions"></span></button>
+  <button class="tab" data-tab="archive" role="tab">Archive<span class="n" id="nArchive"></span></button>
+</nav>
+
+<div class="toolbar" id="toolbar">
+  <input type="search" id="q" placeholder="Search ruler, mint, title, notes…" aria-label="Search">
+  <select id="fSource" aria-label="Filter by source">
+    <option value="">All sources</option>
+  </select>
+  <select id="fMetal" aria-label="Filter by metal">
+    <option value="">All metals</option>
+    <option value="AV">Gold (AV)</option>
+    <option value="AR">Silver (AR)</option>
+    <option value="AE">Copper (AE)</option>
+    <option value="BI">Billon (BI)</option>
+  </select>
+  <select id="fSort" aria-label="Sort">
+    <option value="updated">Recently updated</option>
+    <option value="added">Recently added</option>
+    <option value="auction">Auction date</option>
+    <option value="priceHigh">Price · high → low</option>
+    <option value="priceLow">Price · low → high</option>
+    <option value="ruler">Ruler A→Z</option>
+    <option value="source">Dealer / source A→Z</option>
+  </select>
+  <button class="btn ghost" id="btnSync">Sync &amp; backup</button>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div id="archiveWrap" style="display:none"></div>
+  <div class="empty" id="empty" style="display:none">
+    <div class="coin">AV</div>
+    <h2>The register is empty</h2>
+    <p>Add the first coin offered to you — from a dealer, a fellow collector, or an upcoming auction — and track it from first offer to acquisition.</p>
+  </div>
+</main>
+
+<button class="fab" id="fabAdd" aria-label="Add coin" title="Add coin">+</button>
+<div class="toast" id="toast"></div>
+
+<!-- Add / Edit modal -->
+<div class="overlay" id="ovForm">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head"><h2 id="formTitle">Add coin</h2><button class="x" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div>
+        <label>Source type</label>
+        <div class="seg" id="segSource">
+          <button type="button" data-v="dealer" class="on">Dealer / Collector</button>
+          <button type="button" data-v="auction">Auction</button>
+        </div>
+      </div>
+
+      <div class="fieldset-label">The coin</div>
+      <div><label for="inTitle">Title</label><input id="inTitle" placeholder="e.g. Jahangir, zodiac mohur, Leo"></div>
+      <div class="row2">
+        <div><label for="inRuler">Ruler</label><input id="inRuler" placeholder="e.g. Jahangir" list="dlRulers"></div>
+        <div><label for="inMint">Mint</label><input id="inMint" placeholder="e.g. Agra" list="dlMints"></div>
+      </div>
+      <div class="row3">
+        <div><label for="inMetal">Metal</label>
+          <select id="inMetal">
+            <option value="AV">Gold (AV)</option>
+            <option value="AR" selected>Silver (AR)</option>
+            <option value="AE">Copper (AE)</option>
+            <option value="BI">Billon (BI)</option>
+          </select>
+        </div>
+        <div><label for="inDenom">Denomination</label><input id="inDenom" placeholder="Mohur, Rupee…"></div>
+        <div><label for="inDate">Date (AH / RY)</label><input id="inDate" placeholder="AH 1023 / RY 9"></div>
+      </div>
+      <div class="row3">
+        <div><label for="inWeight">Weight (g)</label><input id="inWeight" inputmode="decimal" placeholder="11.42"></div>
+        <div><label for="inDiam">Diameter (mm)</label><input id="inDiam" inputmode="decimal" placeholder="22"></div>
+        <div><label for="inGrade">Grade</label><input id="inGrade" placeholder="Good VF"></div>
+      </div>
+      <div class="row2">
+        <div><label for="inRef">References</label><input id="inRef" placeholder="KM 180.1 · Zeno 12345"></div>
+        <div><label for="inProv">Provenance</label><input id="inProv" placeholder="Ex. Skanda collection"></div>
+      </div>
+
+      <div class="fieldset-label" id="lblSource">The deal</div>
+      <div class="row2">
+        <div><label for="inSource" id="lblSourceName">Dealer / collector</label><input id="inSource" placeholder="Name" list="dlSources"></div>
+        <div id="wrapStage"><label for="inStage">Stage</label>
+          <select id="inStage"></select>
+        </div>
+      </div>
+      <div class="row3" id="rowAuction" style="display:none">
+        <div><label for="inSale">Sale / catalogue</label><input id="inSale" placeholder="Auction 42"></div>
+        <div><label for="inLot">Lot</label><input id="inLot" inputmode="numeric" placeholder="317"></div>
+        <div><label for="inAucDate">Auction date</label><input id="inAucDate" type="date"></div>
+      </div>
+      <div class="row3">
+        <div><label for="inCurrency">Currency</label>
+          <select id="inCurrency">
+            <option>INR</option><option>USD</option><option>GBP</option><option>EUR</option><option>AED</option>
+          </select>
+        </div>
+        <div><label for="inAsk" id="lblAsk">Asking price</label><input id="inAsk" inputmode="numeric" placeholder="150000"></div>
+        <div><label for="inOffer" id="lblOffer">My offer / max bid</label><input id="inOffer" inputmode="numeric" placeholder="120000"></div>
+      </div>
+      <div><label for="inNotes">Notes</label><textarea id="inNotes" rows="2" placeholder="Condition remarks, comparanda, strategy…"></textarea></div>
+
+      <div class="fieldset-label">Photographs</div>
+      <div class="photos" id="photoGrid"></div>
+
+      <div id="histWrap" style="display:none">
+        <div class="fieldset-label">History</div>
+        <div class="history" id="histList"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn danger" id="btnDelete" style="margin-right:auto;display:none">Delete</button>
+      <button class="btn ghost" data-close>Cancel</button>
+      <button class="btn gold" id="btnSave">Save coin</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail modal -->
+<div class="overlay" id="ovDetail">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head"><h2 id="dTitle"></h2><button class="x" data-close>&times;</button></div>
+    <div class="modal-body" id="dBody"></div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close>Close</button>
+      <button class="btn gold" id="dEdit">Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Acquisition modal -->
+<div class="overlay" id="ovAcquire">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:420px">
+    <div class="modal-head"><h2>Record acquisition</h2><button class="x" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div><label for="inFinal">Final price paid</label><input id="inFinal" inputmode="numeric"></div>
+      <div><label for="inAcqDate">Date acquired</label><input id="inAcqDate" type="date"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close>Cancel</button>
+      <button class="btn gold" id="btnAcquire">Add to collection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sync modal -->
+<div class="overlay" id="ovSync">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:480px">
+    <div class="modal-head"><h2>Sync &amp; backup</h2><button class="x" data-close>&times;</button></div>
+    <div class="modal-body">
+      <p class="sync-note">
+        This register lives entirely on the device you're using — nothing leaves it.
+        To move it between your <b>MacBook Pro</b> and <b>iPhone</b>: export the register file,
+        drop it in <b>iCloud Drive</b> (or AirDrop it), then open this dashboard on the other
+        device and import it. The file carries every coin, photo, and history entry.
+      </p>
+      <p class="backup-tag" id="lastBackup"></p>
+    </div>
+    <div class="modal-foot">
+      <label class="btn ghost" style="margin-right:auto;cursor:pointer">
+        Import register<input type="file" accept=".json,application/json" id="fileImport" style="display:none;width:auto">
+      </label>
+      <button class="btn gold" id="btnExport">Export register</button>
+    </div>
+  </div>
+</div>
+
+<datalist id="dlRulers"></datalist>
+<datalist id="dlMints"></datalist>
+<datalist id="dlSources"></datalist>
+
+<script>
+/* ============ Liberty Heritage Foundation · Acquisitions Register ============ */
+const KEY='lhf_acquisitions_v1';
+const STAGES=[
+  {id:'offered',   label:'Offered',          chip:'stage-offered'},
+  {id:'watching',  label:'Watching',         chip:'stage-watching'},
+  {id:'offer',     label:'Offer made',       chip:'stage-offer'},
+  {id:'neg',       label:'Negotiating',      chip:'stage-neg'},
+  {id:'pay',       label:'Payment pending',  chip:'stage-pay'},
+  {id:'acquired',  label:'Acquired',         chip:'stage-acq'},
+  {id:'passed',    label:'Passed',           chip:'stage-pass'}
+];
+const ACTIVE=['offered','watching','offer','neg','pay'];
+const stageById=id=>STAGES.find(s=>s.id===id)||STAGES[0];
+
+let state=load();
+let tab='pipeline';
+let editingId=null, acquiringId=null;
+let formPhotos=[];
+let formSource='dealer';
+
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY));
+    if(d&&Array.isArray(d.items)){
+      d.items.forEach(i=>{
+        if(!Array.isArray(i.photos)){
+          i.photos=[i.photoObv,i.photoRev].filter(Boolean);
+          delete i.photoObv; delete i.photoRev;
+        }
+      });
+      return d;
+    }
+  }catch(e){}
+  return {items:[],lastBackup:null};
+}
+function save(){ 
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); }
+  catch(e){ toast('Storage is full — remove some photos or export & clear.'); }
+}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fmtMoney(v,cur){
+  if(v==null||v==='')return null;
+  const n=Number(v); if(isNaN(n))return esc(v);
+  const loc = cur==='INR' ? 'en-IN' : 'en-US';
+  const sym={INR:'₹',USD:'$',GBP:'£',EUR:'€',AED:'AED '}[cur]||'';
+  return sym+n.toLocaleString(loc,{maximumFractionDigits:0});
+}
+function fmtDate(iso){
+  if(!iso)return '';
+  const d=new Date(iso+(iso.length===10?'T00:00:00':''));
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function daysUntil(iso){
+  if(!iso)return null;
+  const d=new Date(iso+'T00:00:00'); const now=new Date(); now.setHours(0,0,0,0);
+  return Math.round((d-now)/86400000);
+}
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ---------- Stats ---------- */
+function renderStats(){
+  const act=state.items.filter(i=>ACTIVE.includes(i.stage));
+  const committed=act.filter(i=>['neg','pay','offer'].includes(i.stage))
+    .reduce((a,i)=>a+(Number(i.offer||i.ask)||0),0);
+  const acq=state.items.filter(i=>i.stage==='acquired');
+  const spent=acq.reduce((a,i)=>a+(Number(i.final??i.offer??i.ask)||0),0);
+  const upcoming=state.items.filter(i=>i.sourceType==='auction'&&ACTIVE.includes(i.stage)&&daysUntil(i.aucDate)!=null&&daysUntil(i.aucDate)>=0)
+    .sort((a,b)=>daysUntil(a.aucDate)-daysUntil(b.aucDate))[0];
+  const cur = state.items.find(i=>i.currency)?.currency||'INR';
+  $('#ledger').innerHTML=`
+    <div class="stat"><div class="v">${act.length}</div><div class="k">In pipeline</div></div>
+    <div class="stat"><div class="v gold">${fmtMoney(committed,cur)||'—'}</div><div class="k">Committed / offered</div></div>
+    <div class="stat"><div class="v green">${acq.length}</div><div class="k">Acquired · ${fmtMoney(spent,cur)||'—'}</div></div>
+    <div class="stat"><div class="v red">${upcoming?daysUntil(upcoming.aucDate)+'d':'—'}</div><div class="k">${upcoming?'Next auction · '+esc(upcoming.source||''):'No auctions ahead'}</div></div>`;
+  const nA=state.items.filter(i=>!ACTIVE.includes(i.stage)).length;
+  const nAuc=state.items.filter(i=>i.sourceType==='auction'&&ACTIVE.includes(i.stage)).length;
+  $('#nPipeline').textContent=' '+act.length;
+  $('#nAuctions').textContent=' '+nAuc;
+  $('#nArchive').textContent=' '+nA;
+}
+
+/* ---------- Filters ---------- */
+function refreshSourceFilter(){
+  const sel=$('#fSource'); const cur=sel.value;
+  const names=[...new Set(state.items.map(i=>i.source).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  sel.innerHTML='<option value="">All sources</option>'+names.map(n=>`<option ${n===cur?'selected':''}>${esc(n)}</option>`).join('');
+  const dl=(id,field)=>{ document.getElementById(id).innerHTML=[...new Set(state.items.map(i=>i[field]).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join(''); };
+  dl('dlSources','source'); dl('dlRulers','ruler'); dl('dlMints','mint');
+}
+
+function visibleItems(){
+  const q=$('#q').value.trim().toLowerCase();
+  const src=$('#fSource').value, metal=$('#fMetal').value, sort=$('#fSort').value;
+  let items=state.items.filter(i=>{
+    if(tab==='pipeline'&&!ACTIVE.includes(i.stage))return false;
+    if(tab==='auctions'&&(i.sourceType!=='auction'||!ACTIVE.includes(i.stage)))return false;
+    if(tab==='archive'&&ACTIVE.includes(i.stage))return false;
+    if(src&&i.source!==src)return false;
+    if(metal&&i.metal!==metal)return false;
+    if(q){
+      const hay=[i.title,i.ruler,i.mint,i.denom,i.source,i.notes,i.ref,i.prov,i.grade,i.date].join(' ').toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+  const num=i=>Number(i.final??i.ask??i.offer)||0;
+  const sorters={
+    updated:(a,b)=>(b.updated||0)-(a.updated||0),
+    added:(a,b)=>(b.created||0)-(a.created||0),
+    auction:(a,b)=>{
+      const da=a.sourceType==='auction'&&a.aucDate?a.aucDate:'9999';
+      const db=b.sourceType==='auction'&&b.aucDate?b.aucDate:'9999';
+      return da.localeCompare(db);
+    },
+    priceHigh:(a,b)=>num(b)-num(a),
+    priceLow:(a,b)=>num(a)-num(b),
+    ruler:(a,b)=>(a.ruler||'\uffff').localeCompare(b.ruler||'\uffff'),
+    source:(a,b)=>(a.source||'\uffff').localeCompare(b.source||'\uffff')
+  };
+  items.sort(sorters[sort]||sorters.updated);
+  return items;
+}
+
+/* ---------- Cards ---------- */
+function cardHTML(i){
+  const st=stageById(i.stage);
+  const du=i.sourceType==='auction'?daysUntil(i.aucDate):null;
+  const countChip = (du!=null&&ACTIVE.includes(i.stage))
+    ? `<span class="chip count ${du<=7?'soon':''}">${du<0?'Closed':du===0?'Today':du+'d to go'}</span>`:'';
+  const srcChip = i.sourceType==='auction'
+    ? `<span class="chip src-auction">Auction</span>`
+    : `<span class="chip src-dealer">Dealer</span>`;
+  const specs=[];
+  if(i.denom)specs.push(`<span><b>${esc(i.denom)}</b></span>`);
+  if(i.weight)specs.push(`<span>${esc(i.weight)} g</span>`);
+  if(i.date)specs.push(`<span>${esc(i.date)}</span>`);
+  if(i.grade)specs.push(`<span>${esc(i.grade)}</span>`);
+  if(i.sourceType==='auction'&&i.lot)specs.push(`<span>Lot <b>${esc(i.lot)}</b></span>`);
+  const priceMain = i.stage==='acquired' ? fmtMoney(i.final??i.offer??i.ask,i.currency)
+                                         : fmtMoney(i.ask,i.currency);
+  const priceLbl = i.stage==='acquired' ? 'Paid' : (i.sourceType==='auction'?'Estimate':'Asking');
+  const offerBit = (i.offer&&i.stage!=='acquired') ? `<span class="alt">${i.sourceType==='auction'?'Max bid':'Offered'} ${fmtMoney(i.offer,i.currency)}</span>`:'';
+  const pic=(i.photos&&i.photos[0])||null;
+  const roundel = pic
+    ? `<div class="roundel haspic"><img src="${pic}" alt=""></div>`
+    : `<div class="roundel ${i.metal||'AR'}">${i.metal||'AR'}</div>`;
+  const stageSel = ACTIVE.includes(i.stage) ? `
+    <select data-stage="${i.id}" aria-label="Stage">
+      ${STAGES.map(s=>`<option value="${s.id}" ${s.id===i.stage?'selected':''}>${s.label}</option>`).join('')}
+    </select>` : `
+    <span class="chip ${st.chip}" style="flex:1;text-align:center">${st.label}${i.acqDate?' · '+fmtDate(i.acqDate):''}</span>
+    <button class="icon-btn" data-restore="${i.id}" title="Return to pipeline">↩</button>`;
+  return `<article class="card" data-open="${i.id}">
+    <button class="star ${i.star?'on':''}" data-star="${i.id}" title="Priority">${i.star?'★':'☆'}</button>
+    <div class="card-top">
+      ${roundel}
+      <div style="min-width:0;padding-right:26px">
+        <h3>${esc(i.title)||'Untitled coin'}</h3>
+        <div class="sub">${esc(i.ruler)||'—'}${i.mint?' · <b>'+esc(i.mint)+'</b>':''}</div>
+      </div>
+    </div>
+    ${specs.length?`<div class="specs">${specs.join('')}</div>`:''}
+    <div class="badges">
+      ${srcChip}
+      <span class="chip ${st.chip}">${st.label}</span>
+      ${countChip}
+      ${i.source?`<span style="font-size:12px;color:var(--ivory-dim)">${esc(i.source)}${i.sourceType==='auction'&&i.aucDate?' · '+fmtDate(i.aucDate):''}</span>`:''}
+    </div>
+    ${priceMain?`<div class="price-row"><span class="lbl">${priceLbl}</span><span class="main">${priceMain}</span>${offerBit}</div>`:''}
+    ${i.notes?`<div class="note-line">${esc(i.notes.length>110?i.notes.slice(0,110)+'…':i.notes)}</div>`:''}
+    <div class="card-foot">${stageSel}
+      <button class="icon-btn" data-edit="${i.id}" title="Edit">Edit</button>
+    </div>
+  </article>`;
+}
+
+function render(){
+  renderStats(); refreshSourceFilter();
+  const items=visibleItems();
+  const grid=$('#grid'), arch=$('#archiveWrap');
+  if(tab==='archive'){
+    grid.style.display='none'; arch.style.display='block';
+    const acq=items.filter(i=>i.stage==='acquired');
+    const pas=items.filter(i=>i.stage==='passed');
+    const spent=acq.reduce((a,i)=>a+(Number(i.final??i.offer??i.ask)||0),0);
+    const cur=acq.find(i=>i.currency)?.currency||'INR';
+    arch.innerHTML=
+      (acq.length?`<div class="arch-h">Acquired <span class="n">${acq.length} coins · ${fmtMoney(spent,cur)||''}</span></div><div class="grid">${acq.map(cardHTML).join('')}</div>`:'')+
+      (pas.length?`<div class="arch-h">Passed <span class="n">${pas.length}</span></div><div class="grid">${pas.map(cardHTML).join('')}</div>`:'');
+    $('#empty').style.display=(acq.length+pas.length)?'none':'block';
+  }else{
+    arch.style.display='none'; grid.style.display='grid';
+    grid.innerHTML=items.map(cardHTML).join('');
+    $('#empty').style.display=items.length?'none':'block';
+  }
+}
+
+/* ---------- Stage changes ---------- */
+function setStage(id,stage,extra={}){
+  const i=state.items.find(x=>x.id===id); if(!i)return;
+  if(i.stage===stage)return;
+  i.stage=stage; i.updated=Date.now();
+  Object.assign(i,extra);
+  (i.log=i.log||[]).push({ts:Date.now(),stage});
+  save(); render();
+  toast(stage==='acquired'?'Added to the collection.':stage==='passed'?'Moved to archive · passed.':'Stage updated · '+stageById(stage).label);
+}
+
+/* ---------- Form ---------- */
+function setFormSource(v){
+  formSource=v;
+  document.querySelectorAll('#segSource button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  $('#rowAuction').style.display=v==='auction'?'grid':'none';
+  $('#lblSourceName').textContent=v==='auction'?'Auction house':'Dealer / collector';
+  $('#lblAsk').textContent=v==='auction'?'Estimate':'Asking price';
+  $('#lblOffer').textContent=v==='auction'?'My max bid':'My offer';
+}
+function fillStageSelect(sel,current){
+  sel.innerHTML=STAGES.filter(s=>ACTIVE.includes(s.id)||s.id===current)
+    .map(s=>`<option value="${s.id}" ${s.id===current?'selected':''}>${s.label}</option>`).join('');
+}
+function renderPhotoGrid(){
+  const g=document.getElementById('photoGrid');
+  g.innerHTML=formPhotos.map((p,idx)=>
+    `<div class="photo-slot"><img src="${p}" alt="Coin photo ${idx+1}"><button class="rm" data-rmp="${idx}">×</button></div>`
+  ).join('')+`<div class="photo-slot"><span>+ Add photos</span><input type="file" accept="image/*" multiple id="filePhotos"></div>`;
+  g.querySelectorAll('[data-rmp]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); formPhotos.splice(Number(b.dataset.rmp),1); renderPhotoGrid();
+  }));
+  g.querySelector('#filePhotos').addEventListener('change',handlePhotos);
+}
+function handlePhotos(e){
+  const files=[...e.target.files]; if(!files.length)return;
+  let pending=files.length;
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{
+      const im=new Image();
+      im.onload=()=>{
+        const max=760; let{width:w,height:h}=im;
+        if(Math.max(w,h)>max){const k=max/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(im,0,0,w,h);
+        formPhotos.push(c.toDataURL('image/jpeg',0.72));
+        if(--pending===0)renderPhotoGrid();
+      };
+      im.src=r.result;
+    };
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function openForm(id){
+  editingId=id||null;
+  const i=id?state.items.find(x=>x.id===id):null;
+  $('#formTitle').textContent=i?'Edit coin':'Add coin';
+  $('#btnDelete').style.display=i?'block':'none';
+  setFormSource(i?.sourceType||'dealer');
+  const set=(sel,v)=>{$(sel).value=v??'';};
+  set('#inTitle',i?.title); set('#inRuler',i?.ruler); set('#inMint',i?.mint);
+  $('#inMetal').value=i?.metal||'AR';
+  set('#inDenom',i?.denom); set('#inDate',i?.date); set('#inWeight',i?.weight);
+  set('#inDiam',i?.diam); set('#inGrade',i?.grade); set('#inRef',i?.ref); set('#inProv',i?.prov);
+  set('#inSource',i?.source); set('#inSale',i?.sale); set('#inLot',i?.lot); set('#inAucDate',i?.aucDate);
+  $('#inCurrency').value=i?.currency||'INR';
+  set('#inAsk',i?.ask); set('#inOffer',i?.offer); set('#inNotes',i?.notes);
+  fillStageSelect($('#inStage'),i?.stage||'offered');
+  formPhotos=[...(i?.photos||[])];
+  renderPhotoGrid();
+  if(i?.log?.length){
+    $('#histWrap').style.display='block';
+    $('#histList').innerHTML=[...i.log].reverse().map(l=>
+      `<div><b>${stageById(l.stage).label}</b> — ${new Date(l.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>`).join('');
+  }else $('#histWrap').style.display='none';
+  openOv('#ovForm');
+}
+function saveForm(){
+  const title=$('#inTitle').value.trim();
+  const ruler=$('#inRuler').value.trim();
+  if(!title&&!ruler){toast('Give the coin at least a title or a ruler.');return;}
+  const data={
+    sourceType:formSource,
+    title, ruler, mint:$('#inMint').value.trim(),
+    metal:$('#inMetal').value, denom:$('#inDenom').value.trim(), date:$('#inDate').value.trim(),
+    weight:$('#inWeight').value.trim(), diam:$('#inDiam').value.trim(), grade:$('#inGrade').value.trim(),
+    ref:$('#inRef').value.trim(), prov:$('#inProv').value.trim(),
+    source:$('#inSource').value.trim(), sale:$('#inSale').value.trim(), lot:$('#inLot').value.trim(),
+    aucDate:$('#inAucDate').value, currency:$('#inCurrency').value,
+    ask:$('#inAsk').value.trim(), offer:$('#inOffer').value.trim(), notes:$('#inNotes').value.trim(),
+    photos:formPhotos.slice(),
+    updated:Date.now()
+  };
+  const stage=$('#inStage').value;
+  if(editingId){
+    const i=state.items.find(x=>x.id===editingId);
+    const prevStage=i.stage;
+    Object.assign(i,data);
+    if(stage!==prevStage){i.stage=stage;(i.log=i.log||[]).push({ts:Date.now(),stage});}
+    toast('Saved.');
+  }else{
+    state.items.unshift({id:uid(),created:Date.now(),stage,star:false,log:[{ts:Date.now(),stage}],...data});
+    toast('Added to the register.');
+  }
+  save(); closeOv(); render();
+}
+
+/* ---------- Detail ---------- */
+function openDetail(id){
+  const i=state.items.find(x=>x.id===id); if(!i)return;
+  $('#dTitle').textContent=i.title||'Untitled coin';
+  const rows=[
+    ['Ruler',i.ruler],['Mint',i.mint],['Metal',{AV:'Gold (AV)',AR:'Silver (AR)',AE:'Copper (AE)',BI:'Billon (BI)'}[i.metal]],
+    ['Denomination',i.denom],['Date',i.date],
+    ['Weight',i.weight?i.weight+' g':''],['Diameter',i.diam?i.diam+' mm':''],
+    ['Grade',i.grade],['References',i.ref],['Provenance',i.prov],
+    [i.sourceType==='auction'?'Auction house':'Dealer / collector',i.source],
+    ...(i.sourceType==='auction'?[['Sale',i.sale],['Lot',i.lot],['Auction date',fmtDate(i.aucDate)]]:[]),
+    [i.sourceType==='auction'?'Estimate':'Asking',fmtMoney(i.ask,i.currency)],
+    [i.sourceType==='auction'?'Max bid':'My offer',fmtMoney(i.offer,i.currency)],
+    ...(i.stage==='acquired'?[['Price paid',fmtMoney(i.final,i.currency)],['Acquired',fmtDate(i.acqDate)]]:[]),
+    ['Stage',stageById(i.stage).label],
+    ['Notes',i.notes]
+  ].filter(r=>r[1]);
+  const ph=i.photos||[];
+  const imgs=ph.length?`<div class="detail-imgs">${ph.map((p,n)=>`<img src="${p}" alt="Coin photo ${n+1}">`).join('')}</div>`:'';
+  $('#dBody').innerHTML=imgs+`<div class="detail-table">${rows.map(r=>`<div class="dr"><div class="dk">${r[0]}</div><div class="dv">${esc(r[1])}</div></div>`).join('')}</div>`;
+  $('#dEdit').onclick=()=>{closeOv();openForm(id);};
+  openOv('#ovDetail');
+}
+
+/* ---------- Export / import ---------- */
+function doExport(){
+  const blob=new Blob([JSON.stringify({app:'LHF Acquisitions Register',version:1,exported:new Date().toISOString(),...state},null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='LHF-register-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  state.lastBackup=Date.now(); save(); renderBackupTag();
+  toast('Register exported — save it to iCloud Drive.');
+}
+function doImport(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!Array.isArray(d.items))throw 0;
+      d.items.forEach(i=>{
+        if(!Array.isArray(i.photos)){
+          i.photos=[i.photoObv,i.photoRev].filter(Boolean);
+          delete i.photoObv; delete i.photoRev;
+        }
+      });
+      const incoming=d.items.length, current=state.items.length;
+      if(current>0&&!confirm(`Replace the ${current} coin(s) on this device with the ${incoming} coin(s) in this file?`))return;
+      state={items:d.items,lastBackup:d.lastBackup||null};
+      save(); render(); closeOv();
+      toast('Register imported · '+incoming+' coins.');
+    }catch(e){toast('That file is not a valid register export.');}
+  };
+  r.readAsText(file);
+}
+function renderBackupTag(){
+  $('#lastBackup').textContent=state.lastBackup
+    ? 'Last export from this device: '+new Date(state.lastBackup).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+    : 'No export has been made from this device yet.';
+}
+
+/* ---------- Overlays ---------- */
+function openOv(sel){$(sel).classList.add('open');document.body.style.overflow='hidden';}
+function closeOv(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));document.body.style.overflow='';}
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeOv));
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOv();}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOv();});
+
+/* ---------- Events ---------- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  tab=t.dataset.tab;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));
+  if(tab==='auctions')$('#fSort').value='auction';
+  render();
+}));
+['q','fSource','fMetal','fSort'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+$('#fabAdd').addEventListener('click',()=>openForm(null));
+$('#btnSave').addEventListener('click',saveForm);
+$('#btnDelete').addEventListener('click',()=>{
+  if(!editingId)return;
+  if(!confirm('Delete this coin from the register entirely? (If it was acquired or passed, use the Archive instead.)'))return;
+  state.items=state.items.filter(x=>x.id!==editingId);
+  save(); closeOv(); render(); toast('Deleted.');
+});
+document.querySelectorAll('#segSource button').forEach(b=>b.addEventListener('click',()=>setFormSource(b.dataset.v)));
+$('#btnSync').addEventListener('click',()=>{renderBackupTag();openOv('#ovSync');});
+$('#btnExport').addEventListener('click',doExport);
+$('#fileImport').addEventListener('change',e=>{if(e.target.files[0])doImport(e.target.files[0]);e.target.value='';});
+$('#btnAcquire').addEventListener('click',()=>{
+  if(!acquiringId)return;
+  setStage(acquiringId,'acquired',{final:$('#inFinal').value.trim(),acqDate:$('#inAcqDate').value||new Date().toISOString().slice(0,10)});
+  acquiringId=null; closeOv();
+});
+
+/* Card delegation */
+document.body.addEventListener('click',e=>{
+  const star=e.target.closest('[data-star]');
+  if(star){e.stopPropagation();const i=state.items.find(x=>x.id===star.dataset.star);i.star=!i.star;i.updated=Date.now();save();render();return;}
+  const ed=e.target.closest('[data-edit]');
+  if(ed){e.stopPropagation();openForm(ed.dataset.edit);return;}
+  const rs=e.target.closest('[data-restore]');
+  if(rs){e.stopPropagation();setStage(rs.dataset.restore,'watching');return;}
+  if(e.target.closest('select[data-stage]'))return;
+  const card=e.target.closest('[data-open]');
+  if(card)openDetail(card.dataset.open);
+});
+document.body.addEventListener('change',e=>{
+  const sel=e.target.closest('select[data-stage]');
+  if(!sel)return;
+  const id=sel.dataset.stage, v=sel.value;
+  if(v==='acquired'){
+    acquiringId=id;
+    const i=state.items.find(x=>x.id===id);
+    $('#inFinal').value=i.offer||i.ask||'';
+    $('#inAcqDate').value=new Date().toISOString().slice(0,10);
+    openOv('#ovAcquire');
+    sel.value=i.stage; // revert until confirmed
+  }else{
+    setStage(id,v);
+  }
+});
+
+render();
+
+/* ---------- Offline (PWA) ---------- */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
